@@ -1,9 +1,13 @@
-FROM python:3.9-slim
+name: CI Pipeline
 
-WORKDIR /app
+on: [push]
 
-COPY . .
-
-RUN pip install -r requirements.txt
-
-CMD ["python", "app.py"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker Image
+        run: docker build -t myapp .
+      - name: Run Trivy Scan
+        run: trivy image myapp
